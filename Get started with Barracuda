@@ -1,0 +1,11 @@
+To visualize the urdf file:
+roslaunch barracuda_description urdf_visualize.launch model:='$(find barracuda_description)/urdf/barracuda.urdf'
+
+To spawn the Barracuda into the simulation:
+roslaunch barracuda_description spawn_barracuda.launch
+
+To spawn the Barracuda with controllers into the simulation:
+roslaunch barracuda_description start_barracuda_with_controllers.launch
+
+To spawn the Barracuda with xacro file:
+roslaunch barracuda_description main_barracuda_xacro.launch
