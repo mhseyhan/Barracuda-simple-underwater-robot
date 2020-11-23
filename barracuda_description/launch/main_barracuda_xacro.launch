@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <include file="$(find barracuda_description)/launch/spawn_barracuda_xacro.launch">
+        <arg name="x" value="0.0" />
+        <arg name="y" value="0.0" />
+        <arg name="z" value="1.0" />
+        <arg name="robot_name" value="gurdy" />
+    </include>
+    <include file="$(find barracuda_description)/launch/barracuda_control.launch"/>
+</launch>

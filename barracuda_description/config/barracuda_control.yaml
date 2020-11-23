@@ -1,0 +1,23 @@
+barracuda:
+    # Publish all joint states -----------------------------------
+    joint_state_controller:
+      type: joint_state_controller/JointStateController
+      publish_rate: 50
+    
+    # Position Controllers ---------------------------------------
+    fin_vup_joint_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: fin_vup_joint
+      pid: {p: 1.0, i: 1.0, d: 0.0}
+    fin_vdown_joint_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: fin_vdown_joint
+      pid: {p: 1.0, i: 1.0, d: 0.0}
+    fin_vright_joint_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: fin_vright_joint
+      pid: {p: 1.0, i: 1.0, d: 0.0}
+    fin_vleft_joint_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: fin_vleft_joint
+      pid: {p: 1.0, i: 1.0, d: 0.0}

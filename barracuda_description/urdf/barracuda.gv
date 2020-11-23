@@ -1,0 +1,41 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"fin_vdown" [label="fin_vdown"];
+"fin_vleft" [label="fin_vleft"];
+"fin_vright" [label="fin_vright"];
+"fin_vup" [label="fin_vup"];
+"midball_link" [label="midball_link"];
+"second_link" [label="second_link"];
+"ball_link" [label="ball_link"];
+"camera_link" [label="camera_link"];
+"frontfin_vdown" [label="frontfin_vdown"];
+"frontfin_vleft" [label="frontfin_vleft"];
+"frontfin_vright" [label="frontfin_vright"];
+"frontfin_vup" [label="frontfin_vup"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "fin_vdown_joint" [label="xyz: 0 0 -0.05 \nrpy: 0 -0 0"]
+"fin_vdown_joint" -> "fin_vdown"
+"base_link" -> "fin_vleft_joint" [label="xyz: 0.05 0 0 \nrpy: 0 -0 0"]
+"fin_vleft_joint" -> "fin_vleft"
+"base_link" -> "fin_vright_joint" [label="xyz: -0.05 0 0 \nrpy: 0 -0 0"]
+"fin_vright_joint" -> "fin_vright"
+"base_link" -> "fin_vup_joint" [label="xyz: 0 0 0.05 \nrpy: 0 -0 0"]
+"fin_vup_joint" -> "fin_vup"
+"base_link" -> "midball_joint" [label="xyz: 0 -0.4 -0.005 \nrpy: 0 -0 0"]
+"midball_joint" -> "midball_link"
+"base_link" -> "middle_joint" [label="xyz: 0 -0.55 -0.01 \nrpy: 0 -0 0"]
+"middle_joint" -> "second_link"
+"second_link" -> "ball_joint" [label="xyz: 0 -0.15 -0.004 \nrpy: 0 -0 0"]
+"ball_joint" -> "ball_link"
+"ball_link" -> "camera_joint" [label="xyz: 0 -0.03 0 \nrpy: 0 -0 0"]
+"camera_joint" -> "camera_link"
+"second_link" -> "frontfin_vdown_joint" [label="xyz: 0 -0.05 -0.03 \nrpy: 0 -0 0"]
+"frontfin_vdown_joint" -> "frontfin_vdown"
+"second_link" -> "frontfin_vleft_joint" [label="xyz: 0.05 -0.05 0 \nrpy: 0 -0 0"]
+"frontfin_vleft_joint" -> "frontfin_vleft"
+"second_link" -> "frontfin_vright_joint" [label="xyz: -0.05 -0.05 0 \nrpy: 0 -0 0"]
+"frontfin_vright_joint" -> "frontfin_vright"
+"second_link" -> "frontfin_vup_joint" [label="xyz: 0 -0.05 0.03 \nrpy: 0 -0 0"]
+"frontfin_vup_joint" -> "frontfin_vup"
+}
