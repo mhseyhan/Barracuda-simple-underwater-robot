@@ -1,130 +1,90 @@
 BARRACUDA
-Our own simple underwater robot 
-We want to design as  our group project a simple underwater robot in ROS using the steps we have learned from Robot Ignite Academy course, Robot Creation, URDF for Robot Modeling  (construct, 2020). The name of our robot is Barracuda. Its structure is similar to a conventional underwater missile. Its body has 4 links, 2 cylinders and 2 spheres linked linear to each other to form a convenient missile shape for robot to swim through. Thinner cylinder(second_link) is in the front and it has 4 front fins perpendicular to its surface. Front fins are fixed, and they are for the dynamic stability of the robot. Back fins are connected with revolute joints to bigger cylinder(base_link). They are for the control of the robot. Also, there is a camera at the top/front of the Barracuda. Just at the back of the robot connected to the base_link we would like to implement a thruster, yet the codes are without the thruster for now.
-Ubuntu 16.04 LTS with ROS Kinetic in VMware Workstation16 player was used in the development of our project robot.   
-	Started with creating the package of our robot with the following dependencies:
+simple underwater robot 
+	1. Introduction 
+	As our contribution to the underwater robotics topic, we wanted to design in this group project a framework of a simple underwater robot using ROS. We followed the steps we have learned from Robot Ignite Academy course, Robot Creation, URDF for Robot Modeling (construct, 2020) and we used the code templates in the course as a starting point for our work. Although, the robot is unique and our own design. The name of our robot is Barracuda, and its structure is similar to a conventional underwater missile. Its body has 2 cylinders and 2 spheres linked linear to each other to form a convenient missile shape for robot to swim through. Thinner cylinder (second_link) is in the front and it has 4 front fins perpendicular to its surface. Front fins are fixed, and they are for the dynamic stability of the robot. Back fins are connected with revolute joints to bigger cylinder (base_link). They are for the control of the robot. Also, there is a camera at the top/front of the Barracuda. Just at the back of the robot connected to the base_link we would like to implement a thruster yet the codes are without the thruster for now.
+	Ubuntu 16.04 LTS with ROS Kinetic in VMware Workstation16 player was used in the development of our project robot.   
+	We started with creating the package of our robot with the following dependencies:
 catkin_create_pkg barracuda_description rospy rviz controller_manager gazebo_ros joint_state_publisher robot_state_publisher 
-Created launch, models, rviz_config, config, urdf, worlds folders inside the barracuda_description package:
-Created and wrote the barracuda.urdf file in accordance with Barracudas design.
-Visualizing the Urdf file of the robot Barracuda
-The file itself is relatively long. It is not fully presented here in the report, yet snippets from the file are included to explain how it was constructed. Complete barracuda.urdf file is available at the directory:
+	launch, models, rviz_config, config, urdf, worlds folders were created inside the barracuda_description package. Then we created and wrote the barracuda.urdf file in accordance with Barracudas design inside the urdf folder.
+	The file itself is relatively long. It is not fully presented here in the report, yet snippets from the file are included to explain how it was constructed. Complete barracuda.urdf file is available at the directory:
 barracuda_description/urdf/barracuda.urdf
-To visualize the Barracuda’s urdf file, execute:
+	To visualize the Barracuda’s urdf file, execute:
 roslaunch barracuda_description urdf_visualize.launch model:='$(find barracuda_description)/urdf/barracuda.urdf'
-Launch file directory:
+	Launch file directory:
 barracuda_description/launch/urdf_visualize.launch
-Figure 1 urdf_visualize.launch
- 
-Launch file loads the urdf file, loads joint_state_publisher and robot_state_publisher and runs rviz.
-On the opened rviz page, choosing Fixed Frame as “base_link” and adding the “robot model” will make Barracuda visible.
-Figure 2 Barracuda visual
- 
-Link Descriptions
-	From bottom to top/right to left in Figure 1; 
-base_link color is grey. White colored back fins (defined red in the file but appears white in rviz) are connected to base_link with revolute joints for direction control of the robot. midball_link and second_link are grey and connected to base_link. second_link has four fixed blue colored fins for dynamic stability while moving. Green colored ball_link is the top of the robot connected to the second link and it contains a camera.
-Execute:
+	Launch file loads the urdf file, loads joint_state_publisher and robot_state_publisher and runs rviz.
+	On the opened rviz page, choosing Fixed Frame as “base_link” and adding the “robot model” will make Barracuda visible.
+	3. Link Descriptions and Actuators
+	From bottom to top/right to left; 
+	base_link color is grey. White colored back fins (defined red in the file but appears white in rviz) are connected to base_link with revolute joints for direction control of the robot. midball_link and second_link are grey and connected to base_link. second_link has four fixed blue colored fins for dynamic stability while moving. Green colored ball_link is the top of the robot connected to the second link and it contains a camera.
+	Actuators consist of four moveable back fins with revolute joints connected to the base_link and four smaller front fins fixed to the second_link. Implementation of a thruster at back of the Barracuda connected to the base link is not included in this paper. It is suggested as the first further work.
+	A joint_state_publisher window will also appear after visualizing the urdf file explained in section 2 (starting the urdf_visualize.launch). On the joint_state_publisher, changing the position of back fins joints and observing the movement on the Barracuda is possible. 
+	Execute:
 roscd barracuda_description/urdf
 urdf_to_graphiz barracuda.urdf
-
-This execution will create barracuda.gv and barracuda.pdf files which are already available at directory: 
+	This execution will create barracuda.gv and barracuda.pdf files which are already available at directory: 
 barracuda_description/urdf
-Figure 3 Barracuda Link Description, barracuda.pdf file
- 	
-Figure 4 A snippet from barracuda.urdf file defining only one fin link and its revolute joint:
- 
+	On the barracuda.pdf file, all the links of the Barracuda with their joints, origins, orientations and root links appear clearly.
 	All fins are designed as box shapes with a thickness of 0.002 meters.
 	Mass of the links are taken as that their densities were equal to the density of water.
 	Gazebo physical properties are defined in the gazebo tag. kp and kd are static and dynamic contact stiffness which basically show how though the material is. mu1 and mu2 are static and dynamic friction coefficients which decide how much force is needed to start the movement. 
 	Limit tag of the joint is very critical for simulation of the robot depending on the weight of the robot and the forces applied to robot. Taking extreme numbers may break the robot or make it unable to control. It is identical to choose the appropriate servo for joints. Now they are taken as arbitrary values which are open to manipulation after empirical experiences.
 	Collisions are implemented for base_link, second_link and ball_link just as their visual tag shapes which were considered to be enough to describe the general contact surface of the robot. 
-Figure 5 Snippet from barracuda.urdf file, collision implementation example, base link:
- 
-Sensors
+	4. Sensors
 	Barracuda has only one sensor. It is a camera mounted on the top of the robot, ball_link. Position and the rotation of the camera enables it to record where the robot is going. Camera properties are defined in the urdf file:
-  barracuda_description/urdf/barracuda.urdf
-	It is important to set the reference=”camera_link”. Pose tag is also important to decide the rotation of the camera.
-Figure 6 camera description in barracuda.urdf
- 
-Spawn Barracuda into Simulation
+barracuda_description/urdf/barracuda.urdf
+	It is important to set the reference=”camera_link”. Pose tag is also important to decide the rotation of the camera. Our camera setup on Barracuda has no orientation and it is facing towards front.
+	5. Spawn Barracuda into Simulation
 	We want to spawn our URDF-file defined robot into the simulation using launch files:
 barracuda_description/launch/spawn_urdf.launch 
-Figure 7 spawn_urdf.launch
- 
-This launch file spawns the urdf into the simulation and it’s called by the following spawn_barracuda.launch file.
+	This launch file spawns the urdf into the simulation and it’s called by the following spawn_barracuda.launch file.
 barracuda_description/launch/spawn_barracuda.launch 
-Figure 8 spawn_barracuda.launch
- 
-Includes spawn_urdf.launch in figure 7 and loads urdf file of the Barracuda.
-Execute:
+	Execute:
 roslaunch barracuda_description spawn_barracuda.launch
-To check if we have the model in the simulation, execute:
+	To check if we have the model in the simulation, execute:
 rosservice call/gazebo/get_world_properties “{}” 
-In the output, model_names, ‘barracuda’  name should appear with ‘ground plane’.
-To delete the model, execute:
+	In the output, model_names, ‘barracuda’  name should appear with ‘ground plane’.
+	To delete the model, execute:
 rosservice call /gazebo/delete_model "model_name: ‘barracuda’
-Configuring Controllers
+	6. Configuring Controllers
 	We created and wrote a barracuda_control.yaml file inside config folder to set PIDs for each transmission/motor in the urdf file: 
 barracuda_description/config/barracuda_control.yaml 
-Here we set a publish rate of 50 for joints positions. 4 Fins position controllers’ pid parameters are proportional:1, integral:1 and derivative:0 which are also subject to further tuning with experiments.
+	Here we set a publish rate of 50 for joints positions. 4 Fins position controllers’ pid parameters are proportional:1, integral:1 and derivative:0 which are also subject to further tuning with experiments.
 rosrun rqt_gui rqt_gui 
-command can be used to tune the controlers
-Figure 9 barracuda_control.yaml
- 
-Spawn Barracuda with Controllers
+	command can be used to tune the controlers
+	7. Spawn Barracuda with Controllers
 	Barracuda will be spawned with its controllers defined in the yaml file. We created a main launch file with other two included launch files to spawn barracuda with urdf and yaml file.
-Main launch file:
+	Main launch file:
 barracuda_description/launch/start_barracuda_with_controllers.launch 
-Figure 10 start_barracuda_with_controllers.launch
- 
-Main launch file includes two other launch files:
-Figure 11 spawn_barracuda_with_controllers.launch
- 
-Includes spawn_urdf.launch in figure 7 and loads the urdf file of Barracuda
-Figure 12 barracuda_control.launch
- 
-It loads the barracuda_control.yaml file in figure 9 and launches the controllers with the robot state publisher.
-Finally, executing:
+	Main launch file includes two other launch files:
+	spawn_barracuda_with_controllers.launch
+	Includes spawn_urdf.launch and loads the urdf file of Barracuda
+	barracuda_control.launch
+	It loads the barracuda_control.yaml file and launches the controllers with the robot state publisher.
+	Finally, executing:
 roslaunch barracuda_description start_barracuda_with_controllers.launch
-Gives us a Barracuda robot with controllers. To test controllers, we can either publish directly to the controller topics or publish through the rqt_gui topic publishing feature.
-To publish directly to the controller topic, execute for example:
+	Gives us a Barracuda robot with controllers. To test controllers, we can either publish directly to the controller topics or publish through the rqt_gui topic publishing feature.
+	To publish directly to the controller topic, execute for example:
 rostopic pub /barracuda/fin_vup_joint_position_controller/command std_msgs/Float64 "data: 0.2" 
-To publish through the rqt_gui topic publishing feature, execute:
+	To publish through the rqt_gui topic publishing feature, execute:
 rosrun rqt_gui rqt_gui 
-Click on menu plugins/topics/messages
-Barracudas Xacro File
+	Click on menu plugins/topics/messages
+	8. Barracudas Xacro File
 	Xacro files initially define some fundamental parameters of the robot which are used repetitively in the file. Changing the value in the xacro definition changes the whole repeats. These flexible xacro files make robot model definitions easier to maintain and alter. 
-A xacro file for Barracuda is also created based on its urdf file. Its description of Barracuda is exactly the same as the urdf file. File directory:
+	A xacro file for Barracuda is also created based on its urdf file. Its description of Barracuda is exactly the same as the urdf file. The file itself is relatively long. It is not fully presented here in the report yet snippets from the file are included to explain how it was constructed. Complete barracuda.urdf.xacro file is available at the directory:
 barracuda_description/robot/barracuda.urdf.xacro 
-	Here are the xacro properties and macros that were used throughout the file:
-Figure 13 Snippet from barracuda.urdf.xacro
- 
+	xacro properties and macros that were used throughout the file:
 	Sizes of the links are defined with xacro and open to modification. Radiuses of these two main links are also used in the description of fin edges and ball links. Thus, increasing the size of the main links also directly increases the size of the fins and ball links. Overall size of the robot can easily be adjusted with changing the values of the first five xacro properties. 
-Example, ball_link definition with second_link radius:
-Figure 14 Snippet from barracuda.urdf.xacro
- 
-	Example, a back fin is defined with the base_link radius. Radius of the base link is equal to the edges of the fins that are connected to it:
-
-Figure 15 Snippet from barracuda.urdf.xacro
- 
-xacro macro default_origin, origin definition without rotation nor transformation is also frequently used in the file.
+	xacro macro default_origin, origin definition without rotation nor transformation is also frequently used in the file.
 	Transmissions of the four moveable fin joints are defined in a macro called op_transmission:
-Example left moveable (back) left fin transmission defined with macro op_transmission:
-Figure 16 Snippet from barracuda.urdf.xacro
- 
 	Gazebo properties are exception. They are defined as a macro named g_reference but not used in the file. The reason for that is ${color} parameter in the macro does not appear as the same color as other macro parameters. ${color} might not have been interpreted as we intended in the html format.
-Figure 17 Screenshot from barracuda.urdf.xacro
- 
-Spawn Barracuda with Xacro File
-Launch files for barracuda.xacro file in the directories:
+	9. Spawn Barracuda with Xacro File
+	Launch files for barracuda.xacro file in the directories:
 barracuda_description/launch/spawn_barracuda_xacro.launch 
-Figure 18 spawn_barracuda_xacro.launch
- 
-and main launch file:
+	and main launch file:
 barracuda_description/launch/main_barracuda_xacro.launch 
-Figure 19 main_barracuda_xacro.launch
- 
-Main launch file includes spawn_barracuda_xacro.launch file in figure 18 and barracuda_control.launch in figure 12.
-To spawn Barracuda with the xacro file, execute:
+	Main launch file includes spawn_barracuda_xacro.launch file and barracuda_control.launch.
+	To spawn Barracuda with the xacro file, execute:
 roslaunch barracuda_description main_barracuda_xacro.launch 
 
 References
