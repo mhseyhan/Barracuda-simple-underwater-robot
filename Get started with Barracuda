@@ -1,4 +1,4 @@
-To visualize the urdf file:
+To visualize the urdf file with a joint_state_publisher:
 roslaunch barracuda_description urdf_visualize.launch model:='$(find barracuda_description)/urdf/barracuda.urdf'
 
 To spawn the Barracuda into the simulation:
